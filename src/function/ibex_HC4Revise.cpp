@@ -41,6 +41,8 @@ bool HC4Revise::proj(const Function& f, const Domain& y, IntervalVector& x) {
 
 	// at this point y cannot be empty because the "forward" functions that
 	// may return an empty set (sqrt, tan) throws an exception in this case
+	// THIS REMARK IS NOT TRUE ANYMORE
+	if (root.is_empty()) throw EmptyBoxException();
 
 	switch(y.dim.type()) {
 	case Dim::SCALAR:       if (root.i().is_subset(y.i())) return true; break;
