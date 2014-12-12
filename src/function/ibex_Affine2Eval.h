@@ -13,7 +13,7 @@
 
 #include "ibex_Function.h"
 #include "ibex_Affine2MatrixArray.h"
-#include "ibex_EmptyBoxException.h"
+//#include "ibex_EmptyBoxException.h"
 #include "ibex_FwdAlgorithm.h"
 
 namespace ibex {
