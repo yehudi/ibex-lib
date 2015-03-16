@@ -1,9 +1,13 @@
-/*
- * ibex_FunctionConvexity.h
+/* ============================================================================
+ * I B E X - Function Convexity Analyser
+ * ============================================================================
+ * Copyright   : Ecole des Mines de Nantes (FRANCE)
+ * License     : This program can be distributed under the terms of the GNU LGPL.
+ *               See the file COPYING.LESSER.
  *
- *  Created on: Mar 10, 2015
- *      Author: wolkom
- */
+ * Author(s)   : Yehudi Hollevoet
+ * Created     : Mar 10, 2015
+ * ---------------------------------------------------------------------------- */
 
 #ifndef SRC_FUNCTION_IBEX_FUNCTIONCONVEXITY_H_
 #define SRC_FUNCTION_IBEX_FUNCTIONCONVEXITY_H_
@@ -13,9 +17,15 @@
 
 namespace ibex{
 
-
+/**
+ * \brief Function convexity analyser
+ */
 class FunctionConvexity{
 public:
+
+	/**
+	 * \brief get the convexity property of a function
+	 */
 	Convexity getConvexity(const Function &f){
 		ConvexityExprVisitor cev;
 		f.expr().acceptVisitor(cev);
