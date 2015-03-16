@@ -216,7 +216,15 @@ namespace ibex{
 		for(int i=0; i<this->monomials.size(); ++i){
 			this->monomials[i].coefficient = -this->monomials[i].coefficient;
 		}
-		//TODO
+		if(this->property.convexity == CONVEX)
+			this->property.convexity = CONCAVE;
+		else if(this->property.convexity == CONCAVE)
+			this->property.convexity = CONVEX;
+
+		if(this->property.ordering == INCREASING)
+			this->property.ordering = DECREASING;
+		else if(this->property.ordering == DECREASING)
+			this->property.ordering = INCREASING;
 	}
 
 	void ConvexityExprVisitor::Expr::addMonomial(const Monomial &m){
