@@ -1,7 +1,7 @@
 //============================================================================
 //                                  I B E X
 // File        : TestConvexity.h
-// Author      : Yehudi Hollvoet
+// Author      : Yehudi Hollevoet
 // Copyright   : Ecole des Mines de Nantes (France)
 // License     : See the LICENSE file
 // Created     : Mar 11, 2015
