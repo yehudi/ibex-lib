@@ -75,6 +75,9 @@
 #include "TestSeparator.h"
 #include "TestSepPolygon.h"
 
+// ================ convexity ==============
+
+#include "TestConvexity.h"
 
 using namespace std;
 using std::auto_ptr;
@@ -138,7 +141,7 @@ int main() {
     ts.add(auto_ptr<Test::Suite>(new TestSeparator()));
     ts.add(auto_ptr<Test::Suite>(new TestSepPolygon()));
 
-
+    ts.add(auto_ptr<Test::Suite>(new TestConvexity()));
 
     return ts.run(output,false) ? EXIT_SUCCESS : EXIT_FAILURE;
 
