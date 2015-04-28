@@ -13,8 +13,8 @@
 
 #include "cpptest.h"
 #include "utils.h"
-#include "ibex_ConvexityExprVisitor.h"
-#include "ibex_FunctionConvexity.h"
+#include "ibex_Expr2Polynomial.h"
+#include "ibex_Function.h"
 
 using namespace ibex;
 

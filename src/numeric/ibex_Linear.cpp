@@ -395,5 +395,61 @@ void hansen_bliek(const IntervalMatrix& A, const IntervalVector& B, IntervalVect
 	}
 }
 
+
+
+bool is_definite_positive(const IntervalMatrix& A) {
+	assert(A.nb_cols() == A.nb_rows());
+	if (A.lb()!=A.ub()) {
+		int n = A.nb_rows();
+		Interval sum;
+		Interval matrix[n*n];
+
+		for(int i=0; i < n; ++i){
+			for(int j=0; j<i; ++j){
+				sum = A[i][j];
+				for(int k=0; k<j; ++k)
+					sum -= matrix[n*i + k]*matrix[n*j + k];
+				matrix[n*i + j] = sum / matrix[n*j + j];
+			}
+			//Calculation of diagonal
+			sum = A[i][i];
+			for(int j=0; j < i; ++j)
+				sum -= matrix[n*i + j]*matrix[n*i + j];
+			if(sum.lb() < 0.0){
+				return false;
+			}
+			matrix[n*i+i] = sqrt(sum);
+		}
+		return true;
+	}
+	return is_definite_positive(A.lb());
+}
+
+bool is_definite_positive(const Matrix& A) {
+	assert(A.nb_cols() == A.nb_rows());
+	int n = A.nb_rows();
+	double sum;
+	double matrix[n*n];
+
+	for(int i=0; i < n; ++i){
+		for(int j=0; j<i; ++j){
+			sum = A[i][j];
+			for(int k=0; k<j; ++k)
+				sum -= matrix[n*i + k]*matrix[n*j + k];
+			matrix[n*i + j] = sum / matrix[n*j + j];
+		}
+		//Calculation of diagonal
+		sum = A[i][i];
+		for(int j=0; j < i; ++j)
+			sum -= matrix[n*i + j]*matrix[n*i + j];
+		if(sum < 0.0){
+			return false;
+		}
+		matrix[n*i+i] = std::sqrt(sum);
+	}
+	return true;
+}
+
+
 } // end namespace
 

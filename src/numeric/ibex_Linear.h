@@ -183,6 +183,11 @@ bool inflating_gauss_seidel(const IntervalMatrix& A, const IntervalVector& b, In
 void hansen_bliek(const IntervalMatrix& A, const IntervalVector& b, IntervalVector& x);
 
 
+bool is_definite_positive(const IntervalMatrix& A);
+
+bool is_definite_positive(const Matrix& A);
+
+
 } // end namespace
 
 #endif // __IBEX_LINEAR_H__
