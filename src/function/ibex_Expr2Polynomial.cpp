@@ -1,8 +1,8 @@
 /*
  * ibex_Expr2Polynomial.cpp
  *
- *  Created on: Apr 28, 2015
- *      Author: wolkom
+ *  Created on: Apr 26, 2015
+ *      Author: HOLLEVOET Yehudi
  */
 
 #include <utility>

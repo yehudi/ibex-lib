@@ -2,7 +2,7 @@
  * ibex_Expr2Polynomial.h
  *
  *  Created on: Apr 28, 2015
- *      Author: wolkom
+ *      Author: HOLLEVOET Yehudi
  */
 
 #ifndef SRC_FUNCTION_IBEX_EXPR2POLYNOMIAL_H_
