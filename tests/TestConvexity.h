@@ -13,7 +13,7 @@
 
 #include "cpptest.h"
 #include "utils.h"
-#include "ibex_Expr2Polynomial.h"
+#include "ibex_ConvexityVisitor.h"
 #include "ibex_Function.h"
 
 using namespace ibex;
@@ -25,12 +25,14 @@ public:
 		TEST_ADD(TestConvexity::LinearFunctionConvexity);
 		TEST_ADD(TestConvexity::quadraticFunctionConvexity);
 		TEST_ADD(TestConvexity::specialFunctionConvexity);
+		TEST_ADD(TestConvexity::convexityVisitor);
 	}
 private:
 	void choleskyDecomposition();
 	void LinearFunctionConvexity();
 	void quadraticFunctionConvexity();
 	void specialFunctionConvexity();
+	void convexityVisitor();
 };
 
 #endif // TEST_CONVEXITY

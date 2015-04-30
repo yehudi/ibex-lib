@@ -161,6 +161,13 @@ public:
 	bool isConstant() const;
 
 	void addProperty(const ExprProperty &p);
+
+	void minus();
+
+	/**
+	 * (this o p)(x)
+	 */
+	void composition(const ExprProperty &p);
 };
 
 
@@ -194,9 +201,12 @@ public:
 
 };
 
+ExprProperty polynomial_property(Polynomial *p);
 ExprProperty function_property( const Function &f);
 
 }
+
+
 
 
 

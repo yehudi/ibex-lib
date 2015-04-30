@@ -205,6 +205,27 @@ bool ExprProperty::isDecreasing() const{
 	return ordering == DECREASING || ordering == CONSTANT;
 }
 
+void ExprProperty::minus(){
+	if(convexity == CONVEX_AND_CONCAVE){
+	}else if(isConvex()){
+		convexity = CONCAVE;
+	}else if(isConcave()){
+		convexity = CONVEX;
+	}
+	if(ordering == CONSTANT){
+	}else if(isIncreasing())
+		ordering = DECREASING;
+	else if(isDecreasing())
+		ordering = INCREASING;
+}
+
+void ExprProperty::composition(const ExprProperty &p){
+	if(p.isConcave() && isConvex() && isDecreasing()){
+		convexity = CONVEX;
+		ordering = UNDEFINED_ORDERING;
+	}
+}
+
 void ExprProperty::addProperty( const ExprProperty &p){
 	if(p.convexity == convexity || convexity == UNDEFINED_CONVEXITY){}
 	else if(convexity == CONVEX_AND_CONCAVE)
@@ -218,52 +239,6 @@ void ExprProperty::addProperty( const ExprProperty &p){
 		convexity = NOT_CONVEX_OR_CONCAVE;
 }
 
-ostream& operator<<(ostream& f, const ExprProperty &e){
-	f<<"(";
-	switch(e.convexity){
-	case CONVEX:
-		f<<"convex";
-		break;
-	case CONCAVE:
-		f<<"concave";
-		break;
-	case NOT_CONVEX_OR_CONCAVE:
-		f<<"!convex & !concave";
-		break;
-	case UNDEFINED_CONVEXITY:
-		f<<"undefined";
-		break;
-	case CONVEX_AND_CONCAVE:
-		f<<"convex & concave";
-		break;
-	case CONVEX_OR_CONCAVE:
-		f<<"convex | concave";
-		break;
-	}
-	f<<",";
-	switch(e.ordering){
-		case INCREASING:
-			f<<"increasing";
-			break;
-		case DECREASING:
-			f<<"decreasing";
-			break;
-		case NOT_INCREASING_OR_DECREASING:
-			f<<"!increasing & !decreasing";
-			break;
-		case UNDEFINED_ORDERING:
-			f<<"undefined";
-			break;
-		case INCREASING_OR_DECREASING:
-			f<<"increasing | decreasing";
-			break;
-		case CONSTANT:
-			f<<"constant";
-			break;
-		}
-	f<<")";
-	return f;
-}
 
 Expr2Polynomial::Expr2Polynomial(const ExprNode &n){
 	notMonomialDetected = false;
@@ -406,37 +381,63 @@ void Expr2Polynomial::visit(const ExprSqr& e){
 	}
 }
 
+ExprProperty polynomial_property(Polynomial *p){
+		if(p == NULL){
+			return ExprProperty(UNDEFINED_CONVEXITY, UNDEFINED_ORDERING);
+		}
+		Polynomial * quadra = p->quadra_polynomial();
+		pair<IntervalMatrix,IntervalVector> matrixRepr = quadra->quadra_form();
+		ExprProperty prop;
+		if(quadra->degree()==2){
+			if(is_definite_positive(matrixRepr.first)){
+				prop.addProperty(ExprProperty(CONVEX, NOT_INCREASING_OR_DECREASING));
+			}else{
+				MonomialSum s;
+				for(int i=0; i< quadra->size(); ++i){
+					Monomial m = quadra->getMonomial(i);
+					m.coef = -m.coef;
+					s.addMonomial(m);
+				}
+				matrixRepr = s.quadra_form();
+				if(is_definite_positive(matrixRepr.first)){
+					prop.addProperty(ExprProperty(CONCAVE, NOT_INCREASING_OR_DECREASING));
+				}else{
+					prop.addProperty(ExprProperty(NOT_CONVEX_OR_CONCAVE, NOT_INCREASING_OR_DECREASING));
+				}
+			}
+		}
+		for(int i=0;i< p->size(); ++i){
+			Monomial m = p->getMonomial(i);
+			if(m.degree() > 2){
+				if(m.degree() %2 ==0){
+					if(m.coef.lb() >= 0){
+						prop.addProperty(ExprProperty(CONVEX, NOT_INCREASING_OR_DECREASING));
+					}else if(m.coef.lb() <= 0){
+						prop.addProperty(ExprProperty(CONCAVE, NOT_INCREASING_OR_DECREASING));
+					}else{
+						prop.addProperty(ExprProperty(UNDEFINED_CONVEXITY, NOT_INCREASING_OR_DECREASING));
+						break;
+					}
+				}else{
+					if(m.coef.lb() >= 0){
+						prop.addProperty(ExprProperty(NOT_CONVEX_OR_CONCAVE, INCREASING));
+					}else if(m.coef.lb() <= 0){
+						prop.addProperty(ExprProperty(NOT_CONVEX_OR_CONCAVE, DECREASING));
+					}else{
+						prop.addProperty(ExprProperty(NOT_CONVEX_OR_CONCAVE, UNDEFINED_ORDERING));
+					}
+				}
+			}
+		}
+		delete quadra;
+		delete p;
+		return prop;
+}
 
 ExprProperty function_property( const Function &f){
 	Expr2Polynomial visitor(f.expr());
-	Polynomial * p = visitor.polynomial();
-	if(p == NULL){
-		return ExprProperty(UNDEFINED_CONVEXITY, UNDEFINED_ORDERING);
-	}
-	Polynomial * quadra = p->quadra_polynomial();
-	pair<IntervalMatrix,IntervalVector> matrixRepr = quadra->quadra_form();
-	ExprProperty prop;
-	if(quadra->degree()==2){
-		if(is_definite_positive(matrixRepr.first)){
-			prop.addProperty(ExprProperty(CONVEX, NOT_INCREASING_OR_DECREASING));
-		}else{
-			MonomialSum s;
-			for(int i=0; i< quadra->size(); ++i){
-				Monomial m = quadra->getMonomial(i);
-				m.coef = -m.coef;
-				s.addMonomial(m);
-			}
-			matrixRepr = s.quadra_form();
-			if(is_definite_positive(matrixRepr.first)){
-				prop.addProperty(ExprProperty(CONCAVE, NOT_INCREASING_OR_DECREASING));
-			}else{
-				prop.addProperty(ExprProperty(NOT_CONVEX_OR_CONCAVE, NOT_INCREASING_OR_DECREASING));
-			}
-		}
-	}
-	delete quadra;
-	delete p;
-	return prop;
+	return polynomial_property(visitor.polynomial());
+
 }
 
 
