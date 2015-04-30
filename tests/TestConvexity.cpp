@@ -131,7 +131,7 @@ void TestConvexity::choleskyDecomposition(){
 void TestConvexity::convexityVisitor(){
 	const ExprSymbol& x3 = Variable("x");
 	const ExprSymbol& y3 = Variable("y");
-	Function f3(x3, y3, (exp( x3+ y3 ) + exp( pow(x3 + 5,10) ) ) + (pow(x3,8) + pow(x3,2) + x3*y3 + pow(y3, 2)));
+	Function f3(x3, y3, (exp( max(x3+ y3, exp(2*x3)) ) + exp( pow(x3 + 5,10) ) ) + (pow(x3,8) + pow(x3,2) + x3*y3 + pow(y3, 2)));
 	ConvexityVisitor cv(f3.expr());
 	TEST_ASSERT(cv.property().convexity == CONVEX);
 }
